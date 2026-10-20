@@ -113,9 +113,9 @@ cambiarla farebbe perdere i dati) e le classi `SumdayTheme`, `SumdayApp`.
 
 ## Da fare prima della pubblicazione
 
-- Icona App Store: `iosApp/iosApp/Assets.xcassets/AppIcon.appiconset/icon-1024.png` e'
-  **provvisoria** (ingrandita da `app/src/main/ic_launcher-playstore.png`, 512 px): sostituirla con
-  l'originale a 1024 px.
+- Icona App Store: `iosApp/iosApp/Assets.xcassets/AppIcon.appiconset/icon-1024.png` = originale
+  `Desktop/SumDay/ICONA/SumDay Icon.png` (1024×1024, RGB senza trasparenza, angoli non arrotondati:
+  iOS li arrotonda da solo). Inserita il 20/10/2026.
 - App registrata su App Store Connect con identificativo `com.giammariagristina.sumday`
   (uguale ad Android).
 - iOS non ha tasti "Esci" (linee guida Apple), come in Astro Tilt e SkipMaze.
