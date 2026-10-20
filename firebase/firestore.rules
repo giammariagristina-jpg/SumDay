@@ -2,7 +2,8 @@
 // Le regole vere stanno nella console Firebase (Firestore Database -> Regole): questa copia serve
 // solo a tenere traccia delle modifiche. Dopo ogni cambio in console, aggiornare anche qui.
 //
-// [20/10/2026] SumDay: aggiunto "sumday" alla cancellazione in leaderboard (elimina profilo).
+// [20/10/2026] SumDay: aggiunto "sumday" alla cancellazione in leaderboard e leaderboard_prod
+//   (elimina profilo) e 'SumDay' alle app ammesse in leaderboard_prod (classifica di produzione).
 //   I documenti di SumDay sono "sumday_daily_<data>_<id giocatore>", uno per ogni giorno giocato.
 rules_version = '2';
 service cloud.firestore {
@@ -42,9 +43,9 @@ service cloud.firestore {
         request.resource.data.livello is number &&
         request.resource.data.nome_giocatore is string &&
         request.resource.data.nome_giocatore.size() <= 30 &&
-        request.resource.data.app in ['skyshapes','skipmaze'];
-      // [17/10/2026] Elimina profilo: solo documenti di Astro Tilt
-      allow delete: if docId.matches('(skyshapes|skipmaze)_.+');
+        request.resource.data.app in ['skyshapes','skipmaze','SumDay'];
+      // [17/10/2026] Elimina profilo: Astro Tilt; [19/10/2026] anche SkipMaze; [20/10/2026] anche SumDay
+      allow delete: if docId.matches('(skyshapes|skipmaze|sumday)_.+');
     }
     match /quiz_analytics/{docId} {
       // [17/10/2026] Elimina profilo: le righe del giocatore si cercano (list) e si cancellano

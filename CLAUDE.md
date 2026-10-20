@@ -1,6 +1,6 @@
 # SumDayIOS — regole di porting
 
-Questo repository contiene le due app di **Sumday** (quadrato magico: completare la griglia in modo
+Questo repository contiene le due app di **SumDay** (quadrato magico: completare la griglia in modo
 che righe e colonne diano la somma richiesta, con quiz del giorno e classifica):
 - **Android**: cartella `app/` (Jetpack Compose + Material3). Copia del progetto
   `AndroidStudioProjects/Sumday` del 20/10/2026. Da questa data e' l'**app Android viva**: il vecchio
@@ -60,7 +60,10 @@ Il repository e' pubblico (build macOS gratuite su GitHub Actions). Quindi:
   password, chiavi. I segreti per la firma iOS stanno nei *Secrets* di GitHub
   (`ASC_KEY_ID`, `ASC_ISSUER_ID`, `ASC_KEY_P8`, `APPLE_TEAM_ID`): sono cifrati e invisibili.
 - Firebase via REST (progetto `skatin-9b73f`, come Astro Tilt e SkipMaze): niente SDK ne'
-  `GoogleService-Info.plist`. SumDay Android scrive solo in `leaderboard` (non in `leaderboard_prod`).
+  `GoogleService-Info.plist`. Classifica di test o di produzione con la regola unica di SkipMaze e
+  Astro Tilt: `INTERNAL_PROD_CODE_VERSION` (in `app/build.gradle.kts` per Android, in `Firebase.kt`
+  per iOS) = 0 → `leaderboard`, diverso da 0 → `leaderboard_prod`. Si imposta solo nella build da
+  pubblicare e si rimette a 0 subito dopo.
 - Per compilare l'app Android in Android Studio copiare a mano `app/google-services.json` dal
   vecchio progetto `Sumday` (e' ignorato da git).
 - `firebase/firestore.rules` e' una **copia** delle regole della console Firebase: si aggiorna a
@@ -77,12 +80,14 @@ Il repository e' pubblico (build macOS gratuite su GitHub Actions). Quindi:
 
 ## Elimina profilo (nuova funzione, Android + iOS)
 
-Deciso il 20/10/2026 (strada A). SumDay scrive in `leaderboard` un documento per ogni giorno giocato
+Deciso il 20/10/2026 (strada A). SumDay scrive in `leaderboard` o `leaderboard_prod` un documento per ogni giorno giocato
 al quiz del giorno: `sumday_daily_<aaaa-mm-gg>_<player_id>`. L'id del giocatore non e' un campo del
 documento (le regole non lo permettono), quindi:
 - l'app salva sul telefono (`SumdayPrefs`) l'elenco delle date per cui ha inviato un risultato;
-- "Elimina profilo" cancella esattamente quei documenti, poi azzera nickname, id e dati locali;
-- regole Firestore: `allow delete` in `leaderboard` estesa a `sumday_.+` (vedi `firebase/firestore.rules`).
+- "Elimina profilo" cancella quei documenti da entrambe le classifiche (come SkipMaze), poi azzera
+  nickname, id e dati locali;
+- regole Firestore: `allow delete` in `leaderboard` e `leaderboard_prod` estesa a `sumday_.+`
+  (vedi `firebase/firestore.rules`).
 Limite noto: i risultati inviati **prima** di questa versione non sono nell'elenco locale.
 Si fa prima su Android (`app/`), si prova in Android Studio, poi si porta su iOS.
 
@@ -93,6 +98,12 @@ Si fa prima su Android (`app/`), si prova in Android Studio, poi si porta su iOS
    gioco (`PlayScreen` + `MagicSquareEngine`), quiz del giorno, classifica personale.
 3. Suoni (`SoundPlayer`: suono casuale a ogni nuovo quadrato, suono di soluzione).
 4. Firebase (`DailyLeaderboard`: invio del tempo e tempi di oggi) ed elimina profilo.
+
+## Nome
+
+Il nome dell'app e' **SumDay** (D maiuscola) ovunque sia visibile: `app_name`, testi, nome sotto
+l'icona iOS. Restano invariati solo nomi interni come `SumdayPrefs` (chiave dei dati salvati:
+cambiarla farebbe perdere i dati) e le classi `SumdayTheme`, `SumdayApp`.
 
 ## Da fare prima della pubblicazione
 

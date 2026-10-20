@@ -14,7 +14,11 @@ import kotlinx.coroutines.suspendCancellableCoroutine
 // livelli_completati/timestamp — no room for a "date" field. The day is encoded
 // in the document id instead, so "today's times" is a document-id prefix query.
 object DailyLeaderboard {
-    private const val COLLECTION = "leaderboard"
+    // [20/10/2026] Sostituita dalla regola unica Android/iOS (come SkipMaze e Astro Tilt):
+    // private const val COLLECTION = "leaderboard"
+    // INTERNAL_PROD_CODE_VERSION != 0 → produzione, 0 → test. Nessuna lettura da Firebase.
+    private val COLLECTION: String
+        get() = if (BuildConfig.INTERNAL_PROD_CODE_VERSION != 0) "leaderboard_prod" else "leaderboard"
     private const val APP_NAME = "SumDay"
     private const val DAILY_QUIZ_LEVEL = 3 // position of "I've Got This" among the 4 difficulty levels
 

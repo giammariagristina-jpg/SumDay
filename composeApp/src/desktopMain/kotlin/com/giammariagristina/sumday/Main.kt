@@ -9,7 +9,7 @@ import androidx.compose.ui.window.rememberWindowState
 fun main() = application {
     Window(
         onCloseRequest = ::exitApplication,
-        title = "Sumday - prova desktop",
+        title = "SumDay - prova desktop",
         state = rememberWindowState(width = 390.dp, height = 844.dp)
     ) {
         App()

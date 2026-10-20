@@ -12,8 +12,25 @@ android {
         applicationId = "com.giammariagristina.sumday"
         minSdk = 26
         targetSdk = 36
+        // [20/10/2026] Classifica di test o di produzione: stesso meccanismo di SkipMaze e Astro Tilt.
+        // ─── PROCEDURA OPERATIVA PER IL RILASCIO IN PRODUZIONE ───────────────────
+        // 1. Il versionCode di test è sempre +1 rispetto all'ultimo rilascio in produzione.
+        // 2. INTERNAL_PROD_CODE_VERSION è normalmente = 0 (build di test/sviluppo).
+        // 3. Prima del rilascio in produzione:
+        //      a. Impostare INTERNAL_PROD_CODE_VERSION = versionCode che si sta rilasciando.
+        //      b. Verificare i valori, compilare e generare l'AAB firmato.
+        //      c. Caricare l'AAB su Play Console e pubblicare.
+        // 4. Dopo il rilascio:
+        //      a. Incrementare versionCode di +1.
+        //      b. Aggiornare versionName.
+        //      c. Azzerare INTERNAL_PROD_CODE_VERSION a 0.
+        // ─────────────────────────────────────────────────────────────────────────
+        // PRODUZIONE CURRENT  nessuna (SumDay non e' ancora pubblicata)
         versionCode = 5
         versionName = "4.0.0"
+        // ATTENZIONE - PRIMA DI PASSAGGIO IN PRODUZIONE METTERE = CODEVERSION
+        buildConfigField("int", "INTERNAL_PROD_CODE_VERSION", "0")
+        //ATTENZIONE-> DOPO PASSAGGIO IN PRODUZIONE METTERE 0
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -34,6 +51,7 @@ android {
     }
     buildFeatures {
         compose = true
+        buildConfig = true   // [20/10/2026] per INTERNAL_PROD_CODE_VERSION
     }
 }
 

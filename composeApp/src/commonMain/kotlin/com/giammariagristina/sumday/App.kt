@@ -21,7 +21,7 @@ fun App() {
     MaterialTheme {
         Surface(modifier = Modifier.fillMaxSize()) {
             Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                Text("Sumday")   // res/values/strings.xml: app_name
+                Text("SumDay")   // res/values/strings.xml: app_name
             }
         }
     }

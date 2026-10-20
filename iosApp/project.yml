@@ -23,7 +23,7 @@ targets:
     info:
       path: iosApp/Info.plist
       properties:
-        CFBundleDisplayName: Sumday   # res/values/strings.xml: app_name
+        CFBundleDisplayName: SumDay   # res/values/strings.xml: app_name
         CFBundleShortVersionString: $(MARKETING_VERSION)
         CFBundleVersion: $(CURRENT_PROJECT_VERSION)
         UILaunchScreen: {}
