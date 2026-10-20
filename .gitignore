@@ -1,0 +1,38 @@
+# Gradle / build
+.gradle/
+build/
+**/build/
+.kotlin/
+
+# Impostazioni locali (percorso SDK ecc.)
+local.properties
+
+# Android Studio / IntelliJ
+.idea/
+*.iml
+.DS_Store
+captures/
+.externalNativeBuild/
+.cxx/
+
+# Firma Android (mai su GitHub)
+*.jks
+*.keystore
+app/release/
+
+# Configurazione Firebase: mai nel repository (e' pubblico).
+# Per compilare l'app Android copiare a mano app/google-services.json dal vecchio progetto Sumday.
+google-services.json
+GoogleService-Info.plist
+
+# Chiavi Apple
+*.p8
+
+# iOS (Xcode)
+iosApp/build/
+**/xcuserdata/
+*.xcworkspace/xcuserdata/
+DerivedData/
+
+# Generato da XcodeGen su GitHub Actions (non va salvato)
+iosApp/iosApp.xcodeproj/
