@@ -1,0 +1,136 @@
+# Compila l'app iOS, la firma e la carica su TestFlight.
+# Parte a ogni push sul ramo main (si lavora sul ramo "porting": nessuna build), oppure a mano da GitHub -> Actions -> "iOS" -> Run workflow.
+#
+# Come funziona la firma (nessun Mac, nessun iPhone registrato, nessun certificato da gestire):
+#   1. l'archivio viene creato SENZA firma;
+#   2. l'esportazione usa la chiave API (ruolo Admin): Apple firma l'app con un certificato
+#      di distribuzione gestito sul cloud e la carica direttamente su App Store Connect.
+#
+# Segreti necessari (Settings -> Secrets and variables -> Actions):
+#   ASC_KEY_ID, ASC_ISSUER_ID, ASC_KEY_P8 (testo completo del file .p8), APPLE_TEAM_ID
+name: iOS
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  build-ios:
+    runs-on: macos-26
+    timeout-minutes: 60
+    env:
+      SOLO_IOS: "1"   # settings.gradle.kts: esclude il modulo :app (Android)
+      # ogni upload su TestFlight richiede un numero di build nuovo: usiamo il contatore delle esecuzioni
+      NUMERO_BUILD: ${{ github.run_number }}
+    steps:
+      - uses: actions/checkout@v5
+
+      # Apple accetta solo app compilate con Xcode 26 o successivo
+      - name: Seleziona Xcode 26
+        run: |
+          ls -d /Applications/Xcode*.app
+          X=$(ls -d /Applications/Xcode_26*.app 2>/dev/null | sort -V | tail -1)
+          [ -z "$X" ] && { echo "::error title=Xcode::Nessun Xcode 26 su questo runner"; exit 1; }
+          sudo xcode-select -s "$X/Contents/Developer"
+          xcodebuild -version
+
+      - uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: "21"
+
+      - uses: gradle/actions/setup-gradle@v4
+
+      - name: Cache Kotlin/Native
+        uses: actions/cache@v4
+        with:
+          path: ~/.konan
+          key: konan-${{ runner.os }}-${{ hashFiles('gradle/libs.versions.toml') }}
+
+      - name: Chiave API App Store Connect
+        env:
+          ASC_KEY_P8: ${{ secrets.ASC_KEY_P8 }}
+          ASC_KEY_ID: ${{ secrets.ASC_KEY_ID }}
+        run: |
+          if [ -z "$ASC_KEY_ID" ] || [ -z "$ASC_KEY_P8" ]; then
+            echo "::error title=Segreti::ASC_KEY_ID o ASC_KEY_P8 mancante"; exit 1
+          fi
+          mkdir -p "$HOME/private_keys"
+          printf '%s\n' "$ASC_KEY_P8" | tr -d '\r' > "$HOME/private_keys/AuthKey_${ASC_KEY_ID}.p8"
+          grep -q 'BEGIN PRIVATE KEY' "$HOME/private_keys/AuthKey_${ASC_KEY_ID}.p8" \
+            || { echo "::error title=Segreti::ASC_KEY_P8 non contiene la riga BEGIN PRIVATE KEY"; exit 1; }
+
+      - name: Prepara progetto Xcode
+        run: |
+          chmod +x gradlew
+          brew install xcodegen
+          cd iosApp && xcodegen generate
+
+      # Passo separato: se il codice Kotlin ha errori compaiono qui in chiaro
+      - name: Compila Kotlin per iPhone
+        shell: bash
+        run: |
+          set -o pipefail
+          ./gradlew :composeApp:linkReleaseFrameworkIosArm64 --console=plain 2>&1 | tee "$RUNNER_TEMP/gradle.log"
+
+      - name: Archivio (senza firma)
+        shell: bash
+        run: |
+          set -o pipefail
+          xcodebuild archive \
+            -project iosApp/iosApp.xcodeproj -scheme iosApp \
+            -configuration Release -destination 'generic/platform=iOS' \
+            -archivePath "$RUNNER_TEMP/SumDay.xcarchive" \
+            CURRENT_PROJECT_VERSION="$NUMERO_BUILD" \
+            CODE_SIGNING_ALLOWED=NO CODE_SIGNING_REQUIRED=NO CODE_SIGN_IDENTITY="" \
+            2>&1 | tee "$RUNNER_TEMP/archive.log"
+
+      - name: Firma e carica su TestFlight
+        shell: bash
+        env:
+          ASC_KEY_ID:    ${{ secrets.ASC_KEY_ID }}
+          ASC_ISSUER_ID: ${{ secrets.ASC_ISSUER_ID }}
+          APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
+        run: |
+          set -o pipefail
+          cat > "$RUNNER_TEMP/ExportOptions.plist" <<EOF
+          <?xml version="1.0" encoding="UTF-8"?>
+          <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+          <plist version="1.0">
+          <dict>
+            <key>method</key><string>app-store-connect</string>
+            <key>destination</key><string>upload</string>
+            <key>signingStyle</key><string>automatic</string>
+            <key>teamID</key><string>${APPLE_TEAM_ID}</string>
+            <key>uploadSymbols</key><true/>
+            <key>manageAppVersionAndBuildNumber</key><false/>
+          </dict>
+          </plist>
+          EOF
+          xcodebuild -exportArchive \
+            -archivePath "$RUNNER_TEMP/SumDay.xcarchive" \
+            -exportOptionsPlist "$RUNNER_TEMP/ExportOptions.plist" \
+            -exportPath "$RUNNER_TEMP/export" \
+            -allowProvisioningUpdates \
+            -authenticationKeyPath "$HOME/private_keys/AuthKey_${ASC_KEY_ID}.p8" \
+            -authenticationKeyID "$ASC_KEY_ID" \
+            -authenticationKeyIssuerID "$ASC_ISSUER_ID" \
+            2>&1 | tee "$RUNNER_TEMP/export.log"
+
+      # In caso di errore: le righe significative diventano annotazioni della build
+      # (leggibili dall'API di GitHub senza scaricare i log).
+      - name: Riassunto errori
+        if: failure()
+        shell: bash
+        run: |
+          for f in gradle archive export; do
+            log="$RUNNER_TEMP/$f.log"
+            [ -f "$log" ] || continue
+            righe=$( (grep -nE '^e: |error:|Error Domain|What went wrong|FAILED|Could not' "$log" || true) | head -30)
+            righe="$righe
+          --- ultime righe ---
+          $(tail -25 "$log")"
+            testo=$(printf '%s' "$righe" | sed 's/%/%25/g' | awk '{printf "%s%%0A", $0}')
+            echo "::error title=$f.log::$testo"
+          done

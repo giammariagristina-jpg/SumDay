@@ -1,0 +1,54 @@
+# Progetto Xcode descritto come testo: GitHub Actions lo trasforma in iosApp.xcodeproj
+# con XcodeGen (cosi' non serve un Mac per creare o modificare il progetto).
+# Copiato da SkipMazeIOS; cambiano nome, identificativo, barre di sistema, orientamento e framework.
+name: iosApp
+options:
+  bundleIdPrefix: com.giammariagristina
+  deploymentTarget:
+    iOS: "15.0"
+settings:
+  base:
+    MARKETING_VERSION: "1.0.0"
+    CURRENT_PROJECT_VERSION: "1"   # su GitHub Actions viene sostituito dal numero dell'esecuzione
+targets:
+  iosApp:
+    type: application
+    platform: iOS
+    sources:
+      - path: iosApp
+        excludes: ["PrivacyInfo.xcprivacy"]
+      - path: iosApp/PrivacyInfo.xcprivacy   # manifesto privacy richiesto dall'App Store
+        buildPhase: resources
+    scheme: {}
+    info:
+      path: iosApp/Info.plist
+      properties:
+        CFBundleDisplayName: Sumday   # res/values/strings.xml: app_name
+        CFBundleShortVersionString: $(MARKETING_VERSION)
+        CFBundleVersion: $(CURRENT_PROJECT_VERSION)
+        UILaunchScreen: {}
+        UIRequiresFullScreen: true
+        # Android: barre di sistema visibili (enableEdgeToEdge), icone scure
+        UIStatusBarStyle: UIStatusBarStyleDarkContent
+        # AndroidManifest di SumDay non blocca l'orientamento: come Android (escluso il capovolto, assente su iPhone)
+        UISupportedInterfaceOrientations: [UIInterfaceOrientationPortrait, UIInterfaceOrientationLandscapeLeft, UIInterfaceOrientationLandscapeRight]
+        ITSAppUsesNonExemptEncryption: false
+    settings:
+      base:
+        # Stesso identificativo dell'app Android (registrato su App Store Connect)
+        PRODUCT_BUNDLE_IDENTIFIER: com.giammariagristina.sumday
+        TARGETED_DEVICE_FAMILY: "1"   # solo iPhone
+        ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
+        SWIFT_VERSION: "5.0"
+        ENABLE_USER_SCRIPT_SANDBOXING: NO
+        FRAMEWORK_SEARCH_PATHS: "$(SRCROOT)/../composeApp/build/xcode-frameworks/$(CONFIGURATION)/$(SDK_NAME)"
+        # AVFAudio: suoni; SafariServices: privacy policy aperta dentro l'app (SFSafariViewController)
+        OTHER_LDFLAGS: ["$(inherited)", "-framework", "ComposeApp", "-framework", "AVFAudio", "-framework", "SafariServices"]
+        # niente simulatori Intel: il framework Kotlin esiste solo per arm64
+        "EXCLUDED_ARCHS[sdk=iphonesimulator*]": x86_64
+    preBuildScripts:
+      - name: Compila Kotlin (ComposeApp)
+        basedOnDependencyAnalysis: false
+        script: |
+          cd "$SRCROOT/.."
+          ./gradlew :composeApp:embedAndSignAppleFrameworkForXcode

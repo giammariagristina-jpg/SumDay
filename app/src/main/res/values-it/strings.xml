@@ -1,0 +1,67 @@
+<resources>
+    <string name="app_name">Sumday</string>
+    <string name="orange_emoji">🍊</string>
+
+    <string name="menu_tagline">un piccolo quadrato magico, ogni giorno</string>
+    <string name="menu_play">Gioca</string>
+    <string name="menu_daily_quiz">Sfida del giorno</string>
+    <string name="menu_how_to_play">Come si gioca</string>
+    <string name="menu_leaderboard">Classifica</string>
+    <string name="menu_difficulty_label">Difficoltà: %1$s</string>
+    <string name="menu_change_in_settings">Per cambiarla, vai su Impostazioni</string>
+
+    <string name="bottom_privacy">Privacy</string>
+    <string name="bottom_settings">Impostazioni</string>
+
+    <string name="privacy_title">Sumday - Info e Privacy</string>
+    <string name="privacy_message">Sviluppato da Giammaria Gristina.\n\nGli effetti sonori sono forniti con licenza gratuita da Pixabay (pixabay.com).</string>
+    <string name="privacy_close">Chiudi</string>
+    <string name="privacy_policy">Informativa sulla privacy</string>
+
+    <string name="nickname_welcome">Benvenuto su Sumday</string>
+    <string name="nickname_prompt">Come vuoi farti chiamare?</string>
+    <string name="nickname_label">Nickname</string>
+    <string name="nickname_submit">Si parte</string>
+    <string name="welcome_back_toast">Bentornato, %1$s!</string>
+
+    <string name="settings_title">Impostazioni</string>
+    <string name="settings_sounds">Suoni</string>
+    <string name="settings_difficulty">Difficoltà</string>
+
+    <string name="level_math_sos_name">Aiuto la matematica!!</string>
+    <string name="level_math_sos_descriptor">3x3 - 3 caselle vuote - obiettivo sotto 40</string>
+    <string name="level_homework_hero_name">Ho studiato tanto!!</string>
+    <string name="level_homework_hero_descriptor">3x3 - 5 caselle vuote - numeri più grandi</string>
+    <string name="level_ive_got_this_name">Ho capito tutto</string>
+    <string name="level_ive_got_this_descriptor">4x4 - 6-7 caselle vuote</string>
+    <string name="level_guru_name">Guru</string>
+    <string name="level_guru_descriptor">5x5 - 9-10 caselle vuote - numeri grandi</string>
+
+    <string name="numbers_left_to_place">Numeri ancora da piazzare</string>
+    <string name="new_puzzle">Nuovo quadrato</string>
+    <string name="solved">Risolto!</string>
+    <string name="solved_under_par">%1$s — sotto il tempo di riferimento!</string>
+    <string name="swap_hint">Un paio di numeri devono scambiarsi di posto.</string>
+    <string name="target_sum">Somma obiettivo: %1$d</string>
+
+    <string name="daily_quiz_title">Sfida del giorno</string>
+    <string name="daily_quiz_checking">Controllo la classifica di oggi…</string>
+    <string name="daily_quiz_first">Sei il primo a giocare oggi!</string>
+    <string name="daily_quiz_percent_faster">Più veloce del %1$d%% di chi ha giocato oggi (finora)</string>
+    <string name="daily_quiz_come_back">Torna domani per una sfida nuova.</string>
+    <string name="daily_quiz_error">Impossibile raggiungere la classifica del giorno. Il tuo tempo resta salvato in locale.</string>
+
+    <string name="how_to_play_title">Come si gioca</string>
+    <string name="how_to_play_intro">Affronta la sfida del giorno per entrare in classifica, oppure gioca quando vuoi per sfidare te stesso contro il tempo.</string>
+    <string name="how_to_play_levels_intro">Ci sono quattro livelli di difficoltà:</string>
+    <string name="how_to_play_level_line">%1$s — %2$s</string>
+    <string name="how_to_play_have_fun">Buon divertimento!</string>
+
+    <string name="leaderboard_title">Classifica</string>
+    <string name="leaderboard_subtitle">I tuoi due tempi migliori per ogni livello.</string>
+    <string name="leaderboard_no_times">Ancora nessun tempo</string>
+    <string name="leaderboard_time_row">%1$d. %2$s</string>
+
+    <string name="coming_soon">In arrivo.</string>
+    <string name="back">Indietro</string>
+</resources>

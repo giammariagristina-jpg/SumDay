@@ -1,0 +1,67 @@
+<resources>
+    <string name="app_name">Sumday</string>
+    <string name="orange_emoji">🍊</string>
+
+    <string name="menu_tagline">a little magic square, every day</string>
+    <string name="menu_play">Play</string>
+    <string name="menu_daily_quiz">Daily Quiz</string>
+    <string name="menu_how_to_play">How To Play</string>
+    <string name="menu_leaderboard">Leaderboard</string>
+    <string name="menu_difficulty_label">Difficulty: %1$s</string>
+    <string name="menu_change_in_settings">To change, go to Settings</string>
+
+    <string name="bottom_privacy">Privacy</string>
+    <string name="bottom_settings">Settings</string>
+
+    <string name="privacy_title">Sumday - Info &amp; Privacy</string>
+    <string name="privacy_message">Developed by Giammaria Gristina.\n\nSound effects are provided under a free license by Pixabay (pixabay.com).</string>
+    <string name="privacy_close">Close</string>
+    <string name="privacy_policy">Privacy Policy</string>
+
+    <string name="nickname_welcome">Welcome to Sumday</string>
+    <string name="nickname_prompt">What should we call you?</string>
+    <string name="nickname_label">Nickname</string>
+    <string name="nickname_submit">Let\'s go</string>
+    <string name="welcome_back_toast">Welcome back, %1$s!</string>
+
+    <string name="settings_title">Settings</string>
+    <string name="settings_sounds">Sounds</string>
+    <string name="settings_difficulty">Difficulty</string>
+
+    <string name="level_math_sos_name">Math S.O.S.!!</string>
+    <string name="level_math_sos_descriptor">3x3 - 3 blanks - target under 40</string>
+    <string name="level_homework_hero_name">Homework Hero!!</string>
+    <string name="level_homework_hero_descriptor">3x3 - 5 blanks - bigger numbers</string>
+    <string name="level_ive_got_this_name">I\'ve Got This</string>
+    <string name="level_ive_got_this_descriptor">4x4 - 6-7 blanks</string>
+    <string name="level_guru_name">Guru</string>
+    <string name="level_guru_descriptor">5x5 - 9-10 blanks - big numbers</string>
+
+    <string name="numbers_left_to_place">Numbers left to place</string>
+    <string name="new_puzzle">New puzzle</string>
+    <string name="solved">Solved!</string>
+    <string name="solved_under_par">%1$s — under par!</string>
+    <string name="swap_hint">A couple of numbers need to swap places.</string>
+    <string name="target_sum">Target sum: %1$d</string>
+
+    <string name="daily_quiz_title">Daily Quiz</string>
+    <string name="daily_quiz_checking">Checking today\'s leaderboard…</string>
+    <string name="daily_quiz_first">You\'re the first to play today!</string>
+    <string name="daily_quiz_percent_faster">Faster than %1$d%% of today\'s players (so far)</string>
+    <string name="daily_quiz_come_back">Come back tomorrow for a new one.</string>
+    <string name="daily_quiz_error">Couldn\'t reach the daily leaderboard. Your time is saved locally.</string>
+
+    <string name="how_to_play_title">How To Play</string>
+    <string name="how_to_play_intro">Take on the Daily Quiz and climb the leaderboard, or play anytime to challenge yourself against the clock.</string>
+    <string name="how_to_play_levels_intro">There are four difficulty levels:</string>
+    <string name="how_to_play_level_line">%1$s — %2$s</string>
+    <string name="how_to_play_have_fun">Have fun!</string>
+
+    <string name="leaderboard_title">Leaderboard</string>
+    <string name="leaderboard_subtitle">Your two fastest times per level.</string>
+    <string name="leaderboard_no_times">No times yet</string>
+    <string name="leaderboard_time_row">%1$d. %2$s</string>
+
+    <string name="coming_soon">Coming soon.</string>
+    <string name="back">Back</string>
+</resources>

@@ -1,0 +1,65 @@
+// COPIA delle regole di Firestore (progetto skatin-9b73f), condivise da tutte le app.
+// Le regole vere stanno nella console Firebase (Firestore Database -> Regole): questa copia serve
+// solo a tenere traccia delle modifiche. Dopo ogni cambio in console, aggiornare anche qui.
+//
+// [20/10/2026] SumDay: aggiunto "sumday" alla cancellazione in leaderboard (elimina profilo).
+//   I documenti di SumDay sono "sumday_daily_<data>_<id giocatore>", uno per ogni giorno giocato.
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /config/versione {
+      allow read: if true;
+      allow write: if true;
+    }
+    match /config/skipmaze_versione {
+      allow read: if true;
+      allow write: if true;
+    }
+    match /par_data/{docId}
+    {
+       allow write: if true;
+       allow read:  if false;
+    }
+    match /leaderboard/{docId} {
+      allow read: if true;
+      allow create, update: if
+        request.resource.data.keys().hasAll(['nome_giocatore', 'punteggio', 'livello', 'app']) &&
+        request.resource.data.keys().hasOnly(['nome_giocatore', 'punteggio', 'livello', 'app', 'grado', 'livelli_completati', 'timestamp', 'tempo_totale']) &&
+        request.resource.data.punteggio is number &&
+        request.resource.data.livello is number &&
+        request.resource.data.nome_giocatore is string &&
+        request.resource.data.nome_giocatore.size() <= 30 &&
+        request.resource.data.app in ['cookit', 'skyshapes','SumDay','skipmaze', 'skatin'];
+      // [17/10/2026] Elimina profilo: Astro Tilt; [19/10/2026] anche SkipMaze; [20/10/2026] anche SumDay
+      allow delete: if docId.matches('(skyshapes|skipmaze|sumday)_.+');
+    }
+    match /leaderboard_prod/{docId} {
+      allow read: if true;
+      allow create, update: if
+        request.resource.data.keys().hasAll(['nome_giocatore', 'punteggio', 'livello', 'app']) &&
+        request.resource.data.keys().hasOnly(['nome_giocatore', 'punteggio', 'livello', 'app', 'grado', 'livelli_completati', 'timestamp', 'tempo_totale']) &&
+        request.resource.data.punteggio is number &&
+        request.resource.data.livello is number &&
+        request.resource.data.nome_giocatore is string &&
+        request.resource.data.nome_giocatore.size() <= 30 &&
+        request.resource.data.app in ['skyshapes','skipmaze'];
+      // [17/10/2026] Elimina profilo: solo documenti di Astro Tilt
+      allow delete: if docId.matches('(skyshapes|skipmaze)_.+');
+    }
+    match /quiz_analytics/{docId} {
+      // [17/10/2026] Elimina profilo: le righe del giocatore si cercano (list) e si cancellano
+      allow get: if false;
+      allow list: if request.query.limit <= 300;
+      allow create: if
+        request.resource.data.keys().hasAll(['evento', 'questionId', 'nomeGiocatore', 'idGiocatore']) &&
+        request.resource.data.keys().hasOnly(['evento', 'questionId', 'nomeGiocatore', 'idGiocatore', 'timestamp', 'sceltaErrata', 'rispostaCorretta']) &&
+        request.resource.data.evento in ['risposta_sbagliata', 'risposta_giusta', 'info_tap'] &&
+        request.resource.data.questionId is number &&
+        request.resource.data.nomeGiocatore is string &&
+        request.resource.data.nomeGiocatore.size() <= 40 &&
+        request.resource.data.idGiocatore is string;
+      allow update: if false;
+      allow delete: if true;
+    }
+  }
+}
