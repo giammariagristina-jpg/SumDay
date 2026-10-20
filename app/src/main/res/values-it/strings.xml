@@ -67,4 +67,10 @@
 
     <string name="coming_soon">In arrivo.</string>
     <string name="back">Indietro</string>
+
+    <!-- [20/10/2026] Elimina profilo: testi copiati da SkipMaze (res/values-it/strings.xml) -->
+    <string name="elimina_profilo">Elimina profilo</string>
+    <string name="elimina_profilo_conferma">Il tuo nickname e i tuoi punteggi verranno cancellati definitivamente dal server. Continuare?</string>
+    <string name="profilo_eliminato">Profilo eliminato</string>
+    <string name="elimina_profilo_errore">Non è stato possibile eliminare il profilo, riprova.</string>
 </resources>

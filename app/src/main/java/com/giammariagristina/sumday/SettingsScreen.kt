@@ -11,7 +11,12 @@ import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.selection.selectableGroup
+import android.widget.Toast
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.RadioButton
@@ -21,12 +26,15 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import kotlinx.coroutines.launch
 
 // Stable, locale-independent identifier: used for puzzle generation and
 // leaderboard storage keys. The displayed name/descriptor are localized
@@ -46,10 +54,16 @@ val difficultyLevels = listOf(
 fun SettingsScreen(
     onBack: () -> Unit,
     selectedLevel: DifficultyLevel,
-    onLevelSelected: (DifficultyLevel) -> Unit
+    onLevelSelected: (DifficultyLevel) -> Unit,
+    onProfileDeleted: () -> Unit   // [20/10/2026] Elimina profilo
 ) {
     val context = LocalContext.current
     var soundsOn by remember { mutableStateOf(PlayerPrefs.isSoundEnabled(context)) }
+    var showDeleteDialog by remember { mutableStateOf(false) }
+    var deleting by remember { mutableStateOf(false) }
+    val scope = rememberCoroutineScope()
+    val deletedMessage = stringResource(R.string.profilo_eliminato)
+    val deleteErrorMessage = stringResource(R.string.elimina_profilo_errore)
 
     Column(
         modifier = Modifier
@@ -86,7 +100,49 @@ fun SettingsScreen(
                     )
                 }
             }
+
+            // ── [20/10/2026] Elimina profilo (come SkipMaze: layout_opzioni.xml btnEliminaProfilo,
+            //    sfondo #D32F2F e testo bianco; conferma con OK / Annulla) ──
+            HorizontalDivider(modifier = Modifier.padding(vertical = 20.dp), color = MaterialTheme.colorScheme.outline)
+
+            Button(
+                onClick = { showDeleteDialog = true },
+                enabled = !deleting,
+                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFD32F2F), contentColor = Color.White),
+                modifier = Modifier.align(Alignment.CenterHorizontally)
+            ) { Text(stringResource(R.string.elimina_profilo)) }
         }
+    }
+
+    if (showDeleteDialog) {
+        AlertDialog(
+            onDismissRequest = { showDeleteDialog = false },
+            text = { Text(stringResource(R.string.elimina_profilo_conferma)) },
+            confirmButton = {
+                TextButton(onClick = {
+                    showDeleteDialog = false
+                    deleting = true
+                    scope.launch {
+                        try {
+                            DailyLeaderboard.deleteProfile(
+                                PlayerPrefs.getPlayerId(context),
+                                PlayerPrefs.sentDailyDates(context)
+                            )
+                            PlayerPrefs.clearLocalProfile(context)
+                            Toast.makeText(context, deletedMessage, Toast.LENGTH_SHORT).show()
+                            onProfileDeleted()
+                        } catch (e: Exception) {
+                            Toast.makeText(context, deleteErrorMessage, Toast.LENGTH_SHORT).show()
+                        } finally {
+                            deleting = false
+                        }
+                    }
+                }) { Text(stringResource(android.R.string.ok)) }
+            },
+            dismissButton = {
+                TextButton(onClick = { showDeleteDialog = false }) { Text(stringResource(android.R.string.cancel)) }
+            }
+        )
     }
 }
 

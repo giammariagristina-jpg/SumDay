@@ -89,7 +89,8 @@ documento (le regole non lo permettono), quindi:
 - regole Firestore: `allow delete` in `leaderboard` e `leaderboard_prod` estesa a `sumday_.+`
   (vedi `firebase/firestore.rules`).
 Limite noto: i risultati inviati **prima** di questa versione non sono nell'elenco locale.
-Si fa prima su Android (`app/`), si prova in Android Studio, poi si porta su iOS.
+Android fatto il 20/10/2026 (vedi `MODIFICHE_DA_ANDROID.md`): bottone in fondo a Impostazioni.
+Su iOS va portato identico.
 
 ## Ordine dei lavori
 
@@ -98,6 +99,11 @@ Si fa prima su Android (`app/`), si prova in Android Studio, poi si porta su iOS
    gioco (`PlayScreen` + `MagicSquareEngine`), quiz del giorno, classifica personale.
 3. Suoni (`SoundPlayer`: suono casuale a ogni nuovo quadrato, suono di soluzione).
 4. Firebase (`DailyLeaderboard`: invio del tempo e tempi di oggi) ed elimina profilo.
+
+## Arancia
+
+L'emoji 🍊 in basso al centro del menu e' tolta (commentata) dal 20/10/2026: tornera' come logo
+quando ci sara' un'azienda. Su iOS non va messa.
 
 ## Nome
 

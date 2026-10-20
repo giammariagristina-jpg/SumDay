@@ -97,7 +97,12 @@ fun SumdayApp() {
             Screen.Settings -> SettingsScreen(
                 onBack = { screen = Screen.Menu },
                 selectedLevel = selectedLevel,
-                onLevelSelected = { selectedLevel = it }
+                onLevelSelected = { selectedLevel = it },
+                // [20/10/2026] Elimina profilo: si torna alla richiesta del nickname (come SkipMaze)
+                onProfileDeleted = {
+                    nickname = ""
+                    screen = Screen.Menu
+                }
             )
         }
     }
@@ -183,11 +188,12 @@ private fun BottomBar(onSettings: () -> Unit) {
             modifier = Modifier.align(Alignment.CenterStart)
         ) { Text(stringResource(R.string.bottom_privacy), color = MaterialTheme.colorScheme.onSurfaceVariant) }
 
-        Text(
-            text = stringResource(R.string.orange_emoji),
-            fontSize = 25.sp,
-            modifier = Modifier.align(Alignment.Center)
-        )
+        // [20/10/2026] Arancia tolta finche' non c'e' un'azienda (sara' il suo logo):
+        // Text(
+        //     text = stringResource(R.string.orange_emoji),
+        //     fontSize = 25.sp,
+        //     modifier = Modifier.align(Alignment.Center)
+        // )
 
         TextButton(
             onClick = onSettings,

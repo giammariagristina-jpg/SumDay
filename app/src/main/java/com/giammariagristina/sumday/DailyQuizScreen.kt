@@ -54,6 +54,7 @@ fun DailyQuizScreen(onBack: () -> Unit) {
             val nickname = PlayerPrefs.getNickname(context)
             val playerId = PlayerPrefs.getPlayerId(context)
             DailyLeaderboard.submitResult(nickname, playerId, dateStr, playedSeconds)
+            PlayerPrefs.addSentDailyDate(context, dateStr)   // [20/10/2026] per Elimina profilo
             val times = DailyLeaderboard.fetchTodayTimes(dateStr)
             totalPlayers = times.size
             percentFaster = if (times.size <= 1) 100 else (times.count { it > playedSeconds } * 100 / times.size)

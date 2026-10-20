@@ -45,6 +45,20 @@ object DailyLeaderboard {
             .await()
         return snapshot.documents.mapNotNull { it.getLong("punteggio")?.toInt() }
     }
+
+    // ── Elimina profilo (20/10/2026, come SkipMaze) ──
+    // Cancella sumday_daily_<data>_<id> per ogni data inviata, da entrambe le classifiche.
+    // Su Firestore cancellare un documento che non esiste non e' un errore.
+    suspend fun deleteProfile(playerId: String, dates: Set<String>) {
+        if (playerId.isBlank()) return
+        val db = FirebaseFirestore.getInstance()
+        for (dateStr in dates) {
+            val docId = docIdPrefix(dateStr) + playerId
+            for (collection in listOf("leaderboard", "leaderboard_prod")) {
+                db.collection(collection).document(docId).delete().await()
+            }
+        }
+    }
 }
 
 private suspend fun <T> Task<T>.await(): T = suspendCancellableCoroutine { cont ->

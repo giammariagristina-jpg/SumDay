@@ -67,4 +67,10 @@
 
     <string name="coming_soon">Coming soon.</string>
     <string name="back">Back</string>
+
+    <!-- [20/10/2026] Elimina profilo: testi copiati da SkipMaze (res/values/strings.xml) -->
+    <string name="elimina_profilo">Delete profile</string>
+    <string name="elimina_profilo_conferma">Your nickname and scores will be permanently deleted from the server. Continue?</string>
+    <string name="profilo_eliminato">Profile deleted</string>
+    <string name="elimina_profilo_errore">Couldn\'t delete the profile, please try again.</string>
 </resources>
