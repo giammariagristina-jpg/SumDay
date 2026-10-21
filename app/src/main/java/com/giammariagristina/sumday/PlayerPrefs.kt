@@ -11,6 +11,7 @@ object PlayerPrefs {
     private const val KEY_NICKNAME = "nickname"
     private const val KEY_PLAYER_ID = "player_id"
     private const val KEY_SOUND_ENABLED = "sound_enabled"
+    private const val KEY_SOUND_VOLUME = "sound_volume"   // [21/10/2026] 0..1, default 1 (pieno)
 
     fun getNickname(context: Context): String =
         prefs(context).getString(KEY_NICKNAME, null) ?: ""
@@ -31,6 +32,14 @@ object PlayerPrefs {
 
     fun setSoundEnabled(context: Context, enabled: Boolean) {
         prefs(context).edit { putBoolean(KEY_SOUND_ENABLED, enabled) }
+    }
+
+    // [21/10/2026] Volume degli effetti sonori (slider in Impostazioni)
+    fun getSoundVolume(context: Context): Float =
+        prefs(context).getFloat(KEY_SOUND_VOLUME, 1f)
+
+    fun setSoundVolume(context: Context, volume: Float) {
+        prefs(context).edit { putFloat(KEY_SOUND_VOLUME, volume.coerceIn(0f, 1f)) }
     }
 
     // ── Elimina profilo (20/10/2026, strada A) ──

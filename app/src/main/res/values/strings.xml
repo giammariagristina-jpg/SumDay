@@ -29,6 +29,8 @@
 
     <string name="settings_title">Settings</string>
     <string name="settings_sounds">Sounds</string>
+    <!-- [21/10/2026] copiato da SkipMaze (sfx_volume) -->
+    <string name="sfx_volume">Sound effects volume</string>
     <string name="settings_difficulty">Difficulty</string>
 
     <string name="level_math_sos_name">Math S.O.S.!!</string>

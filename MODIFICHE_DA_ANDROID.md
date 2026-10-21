@@ -50,3 +50,13 @@ commentato nel file.
 
 - `MainActivity.kt`, `BottomBar`: il `Text(orange_emoji)` al centro e' commentato. Tornera' come
   logo quando ci sara' un'azienda. La stringa `orange_emoji` resta in `strings.xml`.
+
+## 21/10/2026 — Volume degli effetti sonori
+
+- `SettingsScreen.kt`: sotto l'interruttore "Suoni", etichetta `sfx_volume` e `Slider` Material3
+  (stesso colore dell'interruttore, `colorScheme.primary`), disattivato quando i suoni sono spenti.
+  Al rilascio suona `solved.mp3` al volume scelto. La colonna ora scorre (`verticalScroll`).
+- `strings.xml` en/it: `sfx_volume` copiato da SkipMaze ("Sound effects volume" / "Volume effetti sonori").
+- `PlayerPrefs.kt`: `sound_volume` (Float 0..1, default 1) in `SumdayPrefs`; resta dopo Elimina profilo.
+- `SoundPlayer.kt`: `MediaPlayer.setVolume(volume, volume)`; nuova `playVolumePreview`.
+- iOS: stesso slider e stesso volume nel motore audio quando si porta Impostazioni.

@@ -10,10 +10,14 @@ object SoundPlayer {
 
     fun playNewPuzzle(context: Context) = play(context, NEW_PUZZLE_SOUNDS.random())
     fun playSolved(context: Context) = play(context, R.raw.solved)
+    // [21/10/2026] Prova del volume quando si rilascia lo slider in Impostazioni
+    fun playVolumePreview(context: Context) = play(context, R.raw.solved)
 
     private fun play(context: Context, resId: Int) {
         if (!PlayerPrefs.isSoundEnabled(context)) return
         val player = MediaPlayer.create(context, resId) ?: return
+        val volume = PlayerPrefs.getSoundVolume(context)   // [21/10/2026] volume da Impostazioni
+        player.setVolume(volume, volume)
         player.setOnCompletionListener { it.release() }
         player.start()
     }

@@ -1,6 +1,8 @@
 package com.giammariagristina.sumday
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.WindowInsets
@@ -20,6 +22,7 @@ import androidx.compose.material3.TextButton
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.RadioButton
+import androidx.compose.material3.Slider
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -59,6 +62,7 @@ fun SettingsScreen(
 ) {
     val context = LocalContext.current
     var soundsOn by remember { mutableStateOf(PlayerPrefs.isSoundEnabled(context)) }
+    var soundVolume by remember { mutableStateOf(PlayerPrefs.getSoundVolume(context)) }   // [21/10/2026]
     var showDeleteDialog by remember { mutableStateOf(false) }
     var deleting by remember { mutableStateOf(false) }
     val scope = rememberCoroutineScope()
@@ -72,7 +76,8 @@ fun SettingsScreen(
     ) {
         SimpleTopBar(title = stringResource(R.string.settings_title), onBack = onBack)
 
-        Column(modifier = Modifier.padding(horizontal = 24.dp)) {
+        // [21/10/2026] verticalScroll: con volume ed Elimina profilo la schermata puo' superare l'altezza
+        Column(modifier = Modifier.verticalScroll(rememberScrollState()).padding(horizontal = 24.dp)) {
             SettingsToggleRow(
                 label = stringResource(R.string.settings_sounds),
                 checked = soundsOn,
@@ -80,6 +85,26 @@ fun SettingsScreen(
                     soundsOn = it
                     PlayerPrefs.setSoundEnabled(context, it)
                 }
+            )
+
+            // [21/10/2026] Volume degli effetti sonori, sotto l'interruttore Suoni.
+            // Slider Material3: stesso colore dell'interruttore (colorScheme.primary).
+            // Disattivato (grigio) quando i suoni sono spenti; al rilascio fa sentire il volume scelto.
+            Text(
+                text = stringResource(R.string.sfx_volume),
+                style = MaterialTheme.typography.bodyLarge,
+                color = MaterialTheme.colorScheme.onBackground,
+                modifier = Modifier.padding(top = 4.dp)
+            )
+            Slider(
+                value = soundVolume,
+                onValueChange = {
+                    soundVolume = it
+                    PlayerPrefs.setSoundVolume(context, it)
+                },
+                onValueChangeFinished = { SoundPlayer.playVolumePreview(context) },
+                enabled = soundsOn,
+                modifier = Modifier.fillMaxWidth()
             )
 
             HorizontalDivider(modifier = Modifier.padding(vertical = 20.dp), color = MaterialTheme.colorScheme.outline)
